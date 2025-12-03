@@ -14,6 +14,10 @@ public class SimilarityEvaluator implements Evaluator {
 	
 	private final double minimumSimilarity;
 	
+	public SimilarityEvaluator(EmbeddingModel embeddingModel) {
+		this(embeddingModel, -1.0);
+	}
+	
 	public SimilarityEvaluator(EmbeddingModel embeddingModel, double minimumSimilarity) {
 		this.embeddingModel = embeddingModel;
 		this.minimumSimilarity = minimumSimilarity;
@@ -43,7 +47,7 @@ public class SimilarityEvaluator implements Evaluator {
 	}
 
 	@Override
-	public EvaluationResponse evaluate(EvaluationRequest evaluationRequest) {
+	public SimilarityEvaluationResponse evaluate(EvaluationRequest evaluationRequest) {
 		if ((evaluationRequest.getDataList() != null) && (!evaluationRequest.getDataList().isEmpty())) {
 			throw new IllegalArgumentException("No data list should be supplied.");
 		}

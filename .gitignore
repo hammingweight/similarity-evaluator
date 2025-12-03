@@ -28,3 +28,4 @@ build
 .classpath
 .settings
 .project
+bin
