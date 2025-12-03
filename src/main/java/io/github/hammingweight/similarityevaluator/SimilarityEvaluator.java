@@ -11,19 +11,18 @@ import org.springframework.ai.evaluation.Evaluator;
 public class SimilarityEvaluator implements Evaluator {
 
 	private final EmbeddingModel embeddingModel;
-	
+
 	private final double minimumSimilarity;
-	
+
 	public SimilarityEvaluator(EmbeddingModel embeddingModel) {
 		this(embeddingModel, -1.0);
 	}
-	
+
 	public SimilarityEvaluator(EmbeddingModel embeddingModel, double minimumSimilarity) {
 		this.embeddingModel = embeddingModel;
 		this.minimumSimilarity = minimumSimilarity;
 	}
-	
-	
+
 	static double cosineSimilarity(float[] vectorA, float[] vectorB) {
 		assert vectorA.length == vectorB.length : "Vectors A and B have different lengths.";
 
@@ -47,32 +46,33 @@ public class SimilarityEvaluator implements Evaluator {
 	}
 
 	@Override
-	public SimilarityEvaluationResponse evaluate(EvaluationRequest evaluationRequest) {
+	public EvaluationResponse evaluate(EvaluationRequest evaluationRequest) {
 		if ((evaluationRequest.getDataList() != null) && (!evaluationRequest.getDataList().isEmpty())) {
 			throw new IllegalArgumentException("No data list should be supplied.");
 		}
-		
+
 		String expectedText = evaluationRequest.getUserText();
 		String llmText = evaluationRequest.getResponseContent();
 		EmbeddingResponse embeddingResponse = embeddingModel.embedForResponse(List.of(expectedText, llmText));
 		float[] expectedEmbedding = embeddingResponse.getResults().get(0).getOutput();
 		float[] actualEmbedding = embeddingResponse.getResults().get(1).getOutput();
-		
+
 		double cosineSimilarity = cosineSimilarity(expectedEmbedding, actualEmbedding);
 		return new SimilarityEvaluationResponse(cosineSimilarity >= minimumSimilarity, cosineSimilarity);
 	}
-	
-	public static class SimilarityEvaluationResponse extends EvaluationResponse {
-		
+
+	private static class SimilarityEvaluationResponse extends EvaluationResponse {
+
 		private final double cosineSimilarity;
-		
+
 		public SimilarityEvaluationResponse(boolean pass, double cosineSimilarity) {
 			super(pass, null, null);
 			this.cosineSimilarity = cosineSimilarity;
 		}
-		
-		public double getCosineSimilarity() {
-			return cosineSimilarity;
+
+		@Override
+		public float getScore() {
+			return (float) cosineSimilarity;
 		}
 	}
 

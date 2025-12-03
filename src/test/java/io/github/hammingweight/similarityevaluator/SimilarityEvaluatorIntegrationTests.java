@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.evaluation.EvaluationRequest;
+import org.springframework.ai.evaluation.EvaluationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import io.github.hammingweight.similarityevaluator.SimilarityEvaluator.SimilarityEvaluationResponse;
 
 @SpringBootTest
 @SpringBootApplication
@@ -22,18 +21,18 @@ public class SimilarityEvaluatorIntegrationTests {
 	public void testGoodSimilarity() {
 		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel);
 		EvaluationRequest request = new EvaluationRequest("the cat sat on the mat", "the cat sat on the mat");
-		SimilarityEvaluationResponse response = evaluator.evaluate(request);
+		EvaluationResponse response = evaluator.evaluate(request);
 		Assertions.assertTrue(response.isPass());
-		Assertions.assertEquals(1.0, response.getCosineSimilarity(), 0.001);
+		Assertions.assertEquals(1.0, response.getScore(), 0.001);
 	}
 	
 	@Test
 	public void testBadSimilarity() {
 		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel, 0.95);
 		EvaluationRequest request = new EvaluationRequest("the cat sat on the mat", "llms are strange");
-		SimilarityEvaluationResponse response = evaluator.evaluate(request);
+		EvaluationResponse response = evaluator.evaluate(request);
 		Assertions.assertFalse(response.isPass());
-		Assertions.assertTrue(response.getCosineSimilarity() < 0.9);
+		Assertions.assertTrue(response.getScore() < 0.9);
 	}
 	
 	@Test
@@ -43,11 +42,11 @@ public class SimilarityEvaluatorIntegrationTests {
 		String badResponse = "The French capital city is Munich";
 		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel);
 		EvaluationRequest request = new EvaluationRequest(expected, actual);
-		SimilarityEvaluationResponse response = evaluator.evaluate(request);
-		double goodSimilarity = response.getCosineSimilarity();
+		EvaluationResponse response = evaluator.evaluate(request);
+		float goodSimilarity = response.getScore();
 		request = new EvaluationRequest(actual, badResponse);
 		response = evaluator.evaluate(request);
-		double badSimilarity = response.getCosineSimilarity();
+		float badSimilarity = response.getScore();
 		Assertions.assertTrue(goodSimilarity > badSimilarity);
 	}
 
