@@ -19,6 +19,12 @@ public class SimilarityEvaluator implements Evaluator {
 	}
 
 	public SimilarityEvaluator(EmbeddingModel embeddingModel, double minimumSimilarity) {
+		if (embeddingModel == null) {
+			throw new NullPointerException("Embedding model cannot be null.");
+		}
+		if (Math.abs(minimumSimilarity) > 1.0) {
+			throw new IllegalArgumentException("Minimum cosine similarity cannot be " + minimumSimilarity + ".");
+		}
 		this.embeddingModel = embeddingModel;
 		this.minimumSimilarity = minimumSimilarity;
 	}
