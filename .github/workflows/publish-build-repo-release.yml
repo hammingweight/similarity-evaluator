@@ -8,6 +8,8 @@ on:
 jobs:
   publish-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -33,7 +35,7 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Build and publish to project-local repo
-        run: ./gradlew --no-daemon -Porg.gradle.jvmargs=-Xmx1g clean publishBuildRepo
+        run: ./gradlew --no-daemon -Porg.gradle.jvmargs=-Xmx1g clean jar sourcesJar javadoc javadocJar publishBuildRepo
         env:
           VERSION: ${{ env.VERSION }}
 
