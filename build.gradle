@@ -103,6 +103,16 @@ publishing {
 			name = 'BuildRepo'
 			url = uri("file://${buildDir}/repo")
 		}
+
+		// GitHub Packages
+		maven {
+			name = 'GitHubPackages'
+			url = uri('https://maven.pkg.github.com/hammingweight/similarity-evaluator')
+			credentials {
+				username = project.findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+				password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+			}
+		}
 	}
 }
 

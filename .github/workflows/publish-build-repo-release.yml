@@ -106,3 +106,10 @@ jobs:
           files: ${{ steps.assets.outputs.assets }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GitHub Packages
+        run: ./gradlew --no-daemon publishMavenJavaPublicationToGitHubPackagesRepository
+        env:
+          VERSION: ${{ env.VERSION }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
