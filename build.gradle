@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.github.hammingweight'
-version = '0.0.1-SNAPSHOT'
+version = System.getenv('VERSION') ?: '0.0.1-SNAPSHOT'
 description = 'A Spring AI evaluator that measures cosine similarity'
 
 java {
