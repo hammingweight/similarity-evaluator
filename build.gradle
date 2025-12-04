@@ -2,6 +2,7 @@ plugins {
 	id 'java-library'
 	id 'org.springframework.boot' version '3.5.8'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'maven-publish'
 }
 
 group = 'io.github.hammingweight'
@@ -12,6 +13,25 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
+}
+
+// Ensure the standard jar is enabled (we don't want to publish the Spring Boot fat jar)
+tasks.named('jar') {
+	enabled = true
+}
+
+// Build sources and javadoc jars
+tasks.register('sourcesJar', Jar) {
+	archiveClassifier.set('sources')
+	from sourceSets.main.allSource
+}
+
+tasks.register('javadocJar', Jar) {
+	dependsOn tasks.named('javadoc')
+	archiveClassifier.set('javadoc')
+	// Use the Javadoc task provider as the source so we don't rely on
+	// a specific property name (`destinationDirectory` vs `destinationDir`).
+	from(tasks.named('javadoc'))
 }
 
 repositories {
@@ -38,4 +58,57 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Configure publications and publish to the project-local build repo only
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			// publish the plain jar produced by the `jar` task (not the Spring Boot fat jar)
+			artifact tasks.named('jar')
+			artifact tasks.named('sourcesJar')
+			artifact tasks.named('javadocJar')
+			pom {
+				name = project.name
+				description = project.description
+				url = 'https://github.com/hammingweight/similarity-evaluator'
+
+				licenses {
+					license {
+						name = 'The Apache License, Version 2.0'
+						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+
+				developers {
+					developer {
+						id = 'hammingweight'
+						name = 'Carl Meijer'
+						url = 'https://github.com/hammingweight'
+					}
+				}
+
+				scm {
+					connection = 'scm:git:git://github.com/hammingweight/similarity-evaluator.git'
+					developerConnection = 'scm:git:ssh://git@github.com/hammingweight/similarity-evaluator.git'
+					url = 'https://github.com/hammingweight/similarity-evaluator'
+				}
+			}
+		}
+	}
+
+	repositories {
+		// local build repo
+		maven {
+			name = 'BuildRepo'
+			url = uri("file://${buildDir}/repo")
+		}
+	}
+}
+
+// Helper task to publish to the project-local build/repo
+tasks.register('publishBuildRepo') {
+	group = 'publishing'
+	description = 'Publish artifacts to build/repo'
+	dependsOn 'publishMavenJavaPublicationToBuildRepoRepository'
 }
