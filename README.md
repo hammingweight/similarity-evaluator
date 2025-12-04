@@ -30,6 +30,11 @@ spring.ai.ollama.embedding.model=qwen3:4b-q4_K_M
  Here are snippets of code showing how to use the `SimilarityEvaluator`
 
 ```java
+import io.github.hammingweight.similarityevaluator.SimilarityEvaluator;
+
+...
+
+
 String llmAnswer = ...
 String goodAnswer = "You may own a single dog";
 double minimumSimilarity = 0.9;
@@ -42,8 +47,8 @@ Assertions.assertTrue(evaluationResponse.isPass());
 ```
 
 The above code expects that the cosine similarity between the actual and expected answer should be at least 0.9. Sometimes, though, we
-don't have a good feeling for what the cosine similarity should be. However, we do know what wrong answers look like. We can then check that the actual answer is more similar to a correct answer than a wrong answer.
-For example, 
+don't have a good feeling for what the cosine similarity should be. However, we do know what wrong answers look like. We can then check that the actual answer is more similar to a correct answer than a wrong answer.  For example,
+
 ```java
 String llmAnswer = ...
 String goodAnswer = "You may own a single dog";
