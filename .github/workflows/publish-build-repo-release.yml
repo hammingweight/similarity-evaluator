@@ -22,8 +22,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Extract version from tag
-        id: extract_version
+      - name: Run unit tests
+        id: run_unit_tests
         run: ./gradlew --no-daemon test --tests io.github.hammingweight.similarityevaluator.SimilarityEvaluatorTests
 
       - name: Extract version from tag
