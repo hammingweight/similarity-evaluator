@@ -19,7 +19,7 @@ class SimilarityEvaluatorTests {
 	EmbeddingModel embeddingModel;
 
 	@Test
-	void cosineSimilarity() {
+	void testCosineSimilarity() {
 		// Same directions
 		double cs = SimilarityEvaluator.cosineSimilarity(new float[] { 1.0f }, new float[] { 1.0f });
 		Assertions.assertEquals(1.0, cs, 0.0001);
@@ -37,6 +37,7 @@ class SimilarityEvaluatorTests {
 	@Test
 	void testNullEmbeddingModel() {
 		Assertions.assertThrows(NullPointerException.class, () -> new SimilarityEvaluator(null));
+		Assertions.assertThrows(NullPointerException.class, () -> new SimilarityEvaluator(null, 0.8));
 	}
 
 	@Test
