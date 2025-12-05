@@ -24,6 +24,10 @@ jobs:
 
       - name: Extract version from tag
         id: extract_version
+        run: ./gradlew --no-daemon test --tests io.github.hammingweight.similarityevaluator.SimilarityEvaluatorTests
+
+      - name: Extract version from tag
+        id: extract_version
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           TAG=${GITHUB_REF#refs/tags/}
