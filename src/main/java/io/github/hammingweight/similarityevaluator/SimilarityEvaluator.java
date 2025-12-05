@@ -1,9 +1,6 @@
 package io.github.hammingweight.similarityevaluator;
 
-import java.util.List;
-
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.ai.evaluation.EvaluationRequest;
 import org.springframework.ai.evaluation.EvaluationResponse;
 import org.springframework.ai.evaluation.Evaluator;
@@ -107,9 +104,8 @@ public class SimilarityEvaluator implements Evaluator {
 
 		String expectedText = evaluationRequest.getUserText();
 		String llmText = evaluationRequest.getResponseContent();
-		EmbeddingResponse embeddingResponse = embeddingModel.embedForResponse(List.of(expectedText, llmText));
-		float[] expectedEmbedding = embeddingResponse.getResults().get(0).getOutput();
-		float[] actualEmbedding = embeddingResponse.getResults().get(1).getOutput();
+		float[] expectedEmbedding = embeddingModel.embed(expectedText);
+		float[] actualEmbedding = embeddingModel.embed(llmText);
 
 		double cosineSimilarity = cosineSimilarity(expectedEmbedding, actualEmbedding);
 		return new EvaluationResponse(cosineSimilarity >= minimumSimilarity, (float) cosineSimilarity, null, null);
