@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.evaluation.EvaluationRequest;
 import org.springframework.ai.evaluation.EvaluationResponse;
+import org.springframework.ai.evaluation.Evaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,7 @@ public class SimilarityEvaluatorIntegrationTests {
 
 	@Test
 	public void testGoodSimilarity() {
-		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel);
+		Evaluator evaluator = new SimilarityEvaluator(embeddingModel);
 
 		EvaluationRequest request = new EvaluationRequest("the cat sat on the mat", "the cat sat on the mat");
 		EvaluationResponse response = evaluator.evaluate(request);
@@ -29,7 +30,7 @@ public class SimilarityEvaluatorIntegrationTests {
 
 	@Test
 	public void testBadSimilarity() {
-		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel, 0.95);
+		Evaluator evaluator = new SimilarityEvaluator(embeddingModel, 0.95);
 
 		EvaluationRequest request = new EvaluationRequest("the cat sat on the mat", "llms are strange");
 		EvaluationResponse response = evaluator.evaluate(request);
@@ -40,7 +41,7 @@ public class SimilarityEvaluatorIntegrationTests {
 
 	@Test
 	public void testReasonableSimilarity() {
-		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel);
+		Evaluator evaluator = new SimilarityEvaluator(embeddingModel);
 
 		String expected = "The French capital city is Paris";
 		String goodResponse = "The capital of France is Paris";
