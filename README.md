@@ -23,7 +23,7 @@ You need to have configured an embedding model in your `application.properties`.
 ```
 spring.ai.ollama.embedding.enabled=true
 spring.ai.ollama.base-url=http://localhost:11434
-spring.ai.ollama.embedding.model=qwen3:4b-q4_K_M
+spring.ai.ollama.embedding.model=qwen3:0.6b-q4_K_M
 ```
 
  ### Using the `SimilarityEvaluator` Class
@@ -85,10 +85,10 @@ ls build/libs/similarity-evaluator-v0.1.3.jar
 ```
 
 ### Running the Tests
-The integration tests need [ollama](https://ollama.com) and use the `qwen3:4b-q4_K_M` LLM as the embedding model. To run the tests
+The integration tests need [ollama](https://ollama.com) and use the `qwen3:0.6b-q4_K_M` LLM as the embedding model. To run the tests
 
 ```bash
-ollama pull qwen3:4b-q4_K_M
+ollama pull qwen3:0.6b-q4_K_M
 ./gradlew clean test
 ```
 
