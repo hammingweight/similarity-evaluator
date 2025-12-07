@@ -54,6 +54,7 @@ class SimilarityEvaluatorTests {
 	@Test
 	void testEmbeddingModelInvoked() {
 		// Setup: configure mock to return embeddings for "foo" and "bar"
+		// Embedding vectors are orthogonal
 		when(embeddingModel.embed("foo")).thenReturn(new float[] { 1.0f, 0.0f });
 		when(embeddingModel.embed("bar")).thenReturn(new float[] { 0.0f, 1.0f });
 
@@ -67,7 +68,30 @@ class SimilarityEvaluatorTests {
 		verify(embeddingModel).embed("bar");
 
 		// Verify: cosine similarity is 0.0 (orthogonal vectors)
-		Assertions.assertEquals(0.0, response.getScore(), 0.0001);
+		Assertions.assertEquals(0.0, response.getScore(), 0.001);
+		// isPass returns false since 0.0 < 0.9.
 		Assertions.assertFalse(response.isPass());
+	}
+
+	@Test
+	void testEmbeddingModelInvokedPass() {
+		// Setup: configure mock to return embeddings for "foo" and "bar"
+		// Embedding vectors are 45 degrees apart.
+		when(embeddingModel.embed("baz")).thenReturn(new float[] { 1.0f, 0.0f });
+		when(embeddingModel.embed("bar")).thenReturn(new float[] { 1.0f, 1.0f });
+
+		// Create evaluator and call evaluate with expected="foo", response="bar"
+		SimilarityEvaluator evaluator = new SimilarityEvaluator(embeddingModel, 0.7);
+		EvaluationRequest request = new EvaluationRequest("baz", "bar");
+		EvaluationResponse response = evaluator.evaluate(request);
+
+		// Verify: embedding model was called with both texts
+		verify(embeddingModel).embed("baz");
+		verify(embeddingModel).embed("bar");
+
+		// Verify: cosine similarity is 0.707 (cos(45) == 0.707)
+		Assertions.assertEquals(0.707, response.getScore(), 0.001);
+		// isPass() should return true since 0.707 > 0.7
+		Assertions.assertTrue(response.isPass());
 	}
 }
