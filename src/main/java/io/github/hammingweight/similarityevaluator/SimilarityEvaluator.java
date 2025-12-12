@@ -65,9 +65,9 @@ public class SimilarityEvaluator implements Evaluator {
 	static double cosineSimilarity(float[] vectorA, float[] vectorB) {
 		assert vectorA.length == vectorB.length : "Vectors A and B have different lengths.";
 
-		double dotProduct = 0.0;
-		double magnitudeA = 0.0;
-		double magnitudeB = 0.0;
+		float dotProduct = 0.0f;
+		float magnitudeA = 0.0f;
+		float magnitudeB = 0.0f;
 
 		for (int i = 0; i < vectorA.length; i++) {
 			dotProduct += vectorA[i] * vectorB[i];
@@ -78,8 +78,8 @@ public class SimilarityEvaluator implements Evaluator {
 		assert magnitudeA != 0.0 : "VectorA is zero.";
 		assert magnitudeB != 0.0 : "VectorB is zero.";
 
-		magnitudeA = Math.sqrt(magnitudeA);
-		magnitudeB = Math.sqrt(magnitudeB);
+		magnitudeA = (float) Math.sqrt(magnitudeA);
+		magnitudeB = (float) Math.sqrt(magnitudeB);
 
 		return dotProduct / (magnitudeA * magnitudeB);
 	}
