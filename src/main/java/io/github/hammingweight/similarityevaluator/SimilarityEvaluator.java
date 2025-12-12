@@ -62,7 +62,7 @@ public class SimilarityEvaluator implements Evaluator {
 	 * @throws AssertionError if vectors have different lengths or if either vector
 	 *                        is zero
 	 */
-	static double cosineSimilarity(float[] vectorA, float[] vectorB) {
+	static float cosineSimilarity(float[] vectorA, float[] vectorB) {
 		assert vectorA.length == vectorB.length : "Vectors A and B have different lengths.";
 
 		float dotProduct = 0.0f;
@@ -107,7 +107,7 @@ public class SimilarityEvaluator implements Evaluator {
 		float[] expectedEmbedding = embeddingModel.embed(expectedText);
 		float[] actualEmbedding = embeddingModel.embed(llmText);
 
-		double cosineSimilarity = cosineSimilarity(expectedEmbedding, actualEmbedding);
-		return new EvaluationResponse(cosineSimilarity >= minimumSimilarity, (float) cosineSimilarity, null, null);
+		float cosineSimilarity = cosineSimilarity(expectedEmbedding, actualEmbedding);
+		return new EvaluationResponse(cosineSimilarity >= minimumSimilarity, cosineSimilarity, null, null);
 	}
 }
