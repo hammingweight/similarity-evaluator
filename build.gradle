@@ -44,7 +44,7 @@ ext {
 }
 
 dependencies {
-	implementation 'org.springframework.ai:spring-ai-model:[1.1.0,2.0.0)'
+	api 'org.springframework.ai:spring-ai-model:[1.1.0,2.0.0)'
 	testImplementation 'org.springframework.ai:spring-ai-starter-model-ollama:1.1.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.5.6'
 	testImplementation 'org.mockito:mockito-core:5.17.0'
@@ -65,10 +65,7 @@ tasks.named('test') {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			// publish the plain jar produced by the `jar` task (not the Spring Boot fat jar)
-			artifact tasks.named('jar')
-			artifact tasks.named('sourcesJar')
-			artifact tasks.named('javadocJar')
+			from components.java
 			pom {
 				name = project.name
 				description = project.description
