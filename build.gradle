@@ -1,6 +1,5 @@
 plugins {
 	id 'java-library'
-	id 'io.spring.dependency-management' version '1.1.7'
 	id 'maven-publish'
 }
 
@@ -49,12 +48,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.5.6'
 	testImplementation 'org.mockito:mockito-core:5.17.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.2'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
-	}
 }
 
 tasks.named('test') {
