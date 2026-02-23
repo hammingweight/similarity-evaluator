@@ -82,12 +82,6 @@ publishing {
 	}
 
 	repositories {
-		// local build repo
-		maven {
-			name = 'BuildRepo'
-			url = uri("file://${buildDir}/repo")
-		}
-
 		// GitHub Packages
 		maven {
 			name = 'GitHubPackages'
