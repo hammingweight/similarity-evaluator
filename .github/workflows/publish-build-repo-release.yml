@@ -30,87 +30,10 @@ jobs:
         id: extract_version
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
-          TAG=${GITHUB_REF#refs/tags/}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "TAG_NAME=$TAG" >> $GITHUB_ENV
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-
-      - name: Build
-        run: ./gradlew --no-daemon -Porg.gradle.jvmargs=-Xmx1g clean jar sourcesJar javadoc javadocJar
-        env:
-          VERSION: ${{ env.VERSION }}
-
-      - name: Locate built JAR
-        id: find_jar
-        run: |
-          set -e
-          echo "Looking for JAR for version ${VERSION} in build/libs"
-          ARTIFACT=$(ls build/libs/*-${VERSION}.jar 2>/dev/null | grep -vE 'sources|javadoc' || true)
-          if [ -z "$ARTIFACT" ]; then
-            ARTIFACT=$(ls build/libs/*.jar 2>/dev/null | grep -vE 'sources|javadoc' | head -n1 || true)
-          fi
-          if [ -z "$ARTIFACT" ]; then
-            echo "No JAR artifact found in build/libs" >&2
-            exit 1
-          fi
-          echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
-          echo "artifact=$ARTIFACT" >> $GITHUB_OUTPUT
-          echo "Found artifact: $ARTIFACT"
-
-          # try to find sources and javadoc jars
-          SOURCES_ARTIFACT=$(ls build/libs/*-${VERSION}*-sources.jar 2>/dev/null || true)
-          if [ -z "$SOURCES_ARTIFACT" ]; then
-            SOURCES_ARTIFACT=$(ls build/libs/*-sources.jar 2>/dev/null | head -n1 || true)
-          fi
-          if [ -n "$SOURCES_ARTIFACT" ]; then
-            echo "SOURCES_ARTIFACT=$SOURCES_ARTIFACT" >> $GITHUB_ENV
-            echo "sources_artifact=$SOURCES_ARTIFACT" >> $GITHUB_OUTPUT
-            echo "Found sources artifact: $SOURCES_ARTIFACT"
-          else
-            echo "sources_artifact=" >> $GITHUB_OUTPUT
-            echo "No sources artifact found"
-          fi
-
-          JAVADOC_ARTIFACT=$(ls build/libs/*-${VERSION}*-javadoc.jar 2>/dev/null || true)
-          if [ -z "$JAVADOC_ARTIFACT" ]; then
-            JAVADOC_ARTIFACT=$(ls build/libs/*-javadoc.jar 2>/dev/null | head -n1 || true)
-          fi
-          if [ -n "$JAVADOC_ARTIFACT" ]; then
-            echo "JAVADOC_ARTIFACT=$JAVADOC_ARTIFACT" >> $GITHUB_ENV
-            echo "javadoc_artifact=$JAVADOC_ARTIFACT" >> $GITHUB_OUTPUT
-            echo "Found javadoc artifact: $JAVADOC_ARTIFACT"
-          else
-            echo "javadoc_artifact=" >> $GITHUB_OUTPUT
-            echo "No javadoc artifact found"
-          fi
-
-      - name: Build list of release assets
-        id: assets
-        run: |
-          ASSETS="${{ steps.find_jar.outputs.artifact }}"
-          if [ -n "${{ steps.find_jar.outputs.sources_artifact }}" ]; then
-            ASSETS="$ASSETS ${{ steps.find_jar.outputs.sources_artifact }}"
-          fi
-          if [ -n "${{ steps.find_jar.outputs.javadoc_artifact }}" ]; then
-            ASSETS="$ASSETS ${{ steps.find_jar.outputs.javadoc_artifact }}"
-          fi
-          echo "assets=$ASSETS" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub release and upload assets
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.extract_version.outputs.tag }}
-          name: ${{ steps.extract_version.outputs.tag }}
-          body: Release ${{ steps.extract_version.outputs.tag }}
-          draft: false
-          prerelease: false
-          files: ${{ steps.assets.outputs.assets }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to GitHub Packages
-        run: ./gradlew --no-daemon publishMavenJavaPublicationToGitHubPackagesRepository
+        run: ./gradlew --no-daemon clean publishMavenJavaPublicationToGitHubPackagesRepository
         env:
           VERSION: ${{ env.VERSION }}
           GITHUB_ACTOR: ${{ github.actor }}
