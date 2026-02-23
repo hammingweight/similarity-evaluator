@@ -64,7 +64,7 @@ Assertions.assertTrue(evaluationResponseGood.getScore() > evaluationResponseBad.
 ```
 
 ## Installing this Package
-You can download similarity-evaluator from the [releases page](https://github.com/hammingweight/similarity-evaluator/releases) or install it from the [Github packages Maven repository](https://github.com/hammingweight?tab=packages&repo_name=similarity-evaluator). If you want to use Github's Maven repository, you'll need to have added it to your Maven settings.xml file by following [these instructions](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry).
+You can install **similarity-evaluator** from the [Github packages Maven repository](https://github.com/hammingweight?tab=packages&repo_name=similarity-evaluator). To use Github's Maven repository, you'll need to have added it to your Maven `settings.xml` file by following [these instructions](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry).
 
 ## Building and Testing
 ### Building the JAR
