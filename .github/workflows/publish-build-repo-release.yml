@@ -36,8 +36,8 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
-      - name: Build and publish to project-local repo
-        run: ./gradlew --no-daemon -Porg.gradle.jvmargs=-Xmx1g clean jar sourcesJar javadoc javadocJar publishBuildRepo
+      - name: Build
+        run: ./gradlew --no-daemon -Porg.gradle.jvmargs=-Xmx1g clean jar sourcesJar javadoc javadocJar
         env:
           VERSION: ${{ env.VERSION }}
 

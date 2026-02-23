@@ -99,10 +99,3 @@ publishing {
 		}
 	}
 }
-
-// Helper task to publish to the project-local build/repo
-tasks.register('publishBuildRepo') {
-	group = 'publishing'
-	description = 'Publish artifacts to build/repo'
-	dependsOn 'publishMavenJavaPublicationToBuildRepoRepository'
-}
