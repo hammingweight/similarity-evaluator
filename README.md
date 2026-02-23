@@ -84,6 +84,13 @@ git checkout $VERSION
 ls build/libs/similarity-evaluator-v0.1.3.jar 
 ```
 
+If you want to publish the artifact to your local Maven cache
+
+```
+./gradlew clean publishToMavenLocal
+```
+
+
 ### Running the Tests
 The integration tests need [ollama](https://ollama.com) and use the `nomic-embed-text:v1.5` embedding model. To run the tests
 
