@@ -93,15 +93,9 @@ public class SimilarityEvaluator implements Evaluator {
 	 * @return an EvaluationResponse indicating whether the similarity threshold was
 	 *         met. Invoking the getScore() method on the EvaluationResponse returns
 	 *         the cosine similarity.
-	 * @throws IllegalArgumentException if the evaluation request contains a data
-	 *                                  list
 	 */
 	@Override
 	public EvaluationResponse evaluate(EvaluationRequest evaluationRequest) {
-		if ((evaluationRequest.getDataList() != null) && (!evaluationRequest.getDataList().isEmpty())) {
-			throw new IllegalArgumentException("No data list should be supplied.");
-		}
-
 		String expectedText = evaluationRequest.getUserText();
 		String llmText = evaluationRequest.getResponseContent();
 		float[] expectedEmbedding = embeddingModel.embed(expectedText);
